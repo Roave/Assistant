@@ -6,22 +6,14 @@
     <link type="text/css" rel="stylesheet" href="style.css" />
     <script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
     <script type="text/javascript" src="bower_components/eventEmitter/EventEmitter.min.js"></script>
-    <script type="text/javascript" src="Assistant.js"></script>
-    <script type="text/javascript" src="Handler.js"></script>
-    <script type="text/javascript" src="UI.js"></script>
-    <script type="text/javascript">
-    $(document).on('ready', function(){
-        Assistant.on('endSpeak', function() {
-            console.log('listening');
-            Assistant.passiveListen('assistant');
-            return true; // only once
-        })
-        Assistant.speak('Hello, I\'m your virtual assistant.');
-    });
-    </script>
+    <script type="text/javascript" src="js/Assistant.js"></script>
+    <script type="text/javascript" src="js/VoicePlugin.js"></script>
+    <script type="text/javascript" src="js/PostPlugin.js"></script>
+    <script type="text/javascript" src="js/UIPlugin.js"></script>
+    <script type="text/javascript" src="js/main.js"></script>
 </head>
 <body>
     <h2>Assistant v0.0.1-alpha</h2>
-    <strong>Status:</strong> <label id="status"></label>
+    <strong>Status:</strong> <label id="status">Speaking</label>
 </body>
 </html>
