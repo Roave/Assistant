@@ -21,11 +21,13 @@
         u.text  = text;
         u.onend = function(e) {
             speaking = false;
+            recognition.start();
             self.trigger('endSpeak');
         };
         this.trigger('startSpeak');
 
-        var speaking = true;
+        speaking = true;
+        recognition.stop();
 
         speechSynthesis.speak(u);
         // Don't remove this console.log...
@@ -37,7 +39,7 @@
         var self = this;
         recognition.onresult = function(event) {
             if (speaking) {
-                // She doesn't like interruptions
+                // She doesn't like interruptions (and we don't want her to hear herself)
                 return;
             }
 
@@ -48,6 +50,7 @@
                     self.trigger('finalSpeech', [words])
                     return; // ignore the final, we use interim for low latency on the wake-up... maybe continue instead?
                 } else if (!activelyListening) {
+                    console.log('Interim: ' + words);
                     self.trigger('interimSpeech', [words]);
                     if (words.match(new RegExp(triggerWord, 'i'))) {
                         /**
@@ -58,29 +61,27 @@
                          * listening mode, and the next 'final' speech result
                          * that comes back will trigger a speech request.
                          */
+                        self.speak('How can I help you?');
                         activelyListening = true;
-                        self.on('finalSpeech', function() {
-                            // once the rest of the speech from the trigger statement comes in, start active listening
-                            self.on('finalSpeech', function(words) {
-                                self.trigger('speechRequest', [words]);
-                                activelyListening = false;
-                                console.log('Going back into passive listening mode.');
-                                return true;
-                            });
-                            console.log('Active listening mode enabled. Ready for request...');
+                        console.log('Active listening mode enabled. Ready for request...');
+                        self.on('finalSpeech', function(words) {
+                            self.trigger('speechRequest', [words]);
+                            activelyListening = false;
+                            console.log('Going back into passive listening mode.');
                             return true;
                         });
-                        self.speak('How can I help you?');
                     }
-                    console.log('Interim: ' + words);
                 }
             }
         };
         recognition.onend = function() {
             // always listening... Chrome times out after 60 seconds.
-            recognition.start();
+            if (!speaking) {
+                console.log('Timeout. Restarted speech recognition.');
+                recognition.start();
+            }
         };
-        recognition.start();
+        //recognition.start();
 
     };
 
