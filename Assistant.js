@@ -58,16 +58,16 @@
                          * listening mode, and the next 'final' speech result
                          * that comes back will trigger a speech request.
                          */
+                        activelyListening = true;
                         self.on('finalSpeech', function() {
                             // once the rest of the speech from the trigger statement comes in, start active listening
-                            activelyListening = true;
                             self.on('finalSpeech', function(words) {
                                 self.trigger('speechRequest', [words]);
-                                console.log('Going back into passive mode. Say "assistant" to activate.');
                                 activelyListening = false;
+                                console.log('Going back into passive listening mode.');
                                 return true;
                             });
-                            console.log('Ready for request...');
+                            console.log('Active listening mode enabled. Ready for request...');
                             return true;
                         });
                         self.speak('How can I help you?');
