@@ -5,7 +5,8 @@
     recognition.continuous = true;
     recognition.interimResults = true;
 
-    var passiveListening = false;
+    var speaking = false;
+    var activelyListening = false;
 
     function Module() {
 
@@ -19,11 +20,13 @@
         var u   = new SpeechSynthesisUtterance();
         u.text  = text;
         u.onend = function(e) {
-            passiveListening = true;
+            speaking = false;
             self.trigger('endSpeak');
         };
         this.trigger('startSpeak');
-        passiveListening = false;
+
+        var speaking = true;
+
         speechSynthesis.speak(u);
         // Don't remove this console.log...
         // http://stackoverflow.com/questions/23483990/speechsynthesis-api-onend-callback-not-working#comment36226070_23483990
@@ -33,21 +36,43 @@
     Module.prototype.passiveListen = function(triggerWord) {
         var self = this;
         recognition.onresult = function(event) {
-            if (!passiveListening) {
+            if (speaking) {
+                // She doesn't like interruptions
                 return;
             }
+
             for (var i = event.resultIndex; i < event.results.length; ++i) {
-                var word = event.results[i][0].transcript;
+                var words = event.results[i][0].transcript;
                 if (event.results[i].isFinal) {
-                    console.log('Final: ' + word);
-                    return; // ignore the final, we use interim for low latency on the wake-up
-                } else {
-                    console.log('Interim: ' + word);
-                }
-                if (passiveListening && word.match(new RegExp(triggerWord, 'i'))) {
-                    passiveListening = false;
-                    self.trigger('passiveMatch');
-                    self.speak('How can I help you?');
+                    console.log('Final: ' + words);
+                    self.trigger('finalSpeech', [words])
+                    return; // ignore the final, we use interim for low latency on the wake-up... maybe continue instead?
+                } else if (!activelyListening) {
+                    self.trigger('interimSpeech', [words]);
+                    if (words.match(new RegExp(triggerWord, 'i'))) {
+                        /**
+                         * They just said the trigger word. Now, the next time
+                         * final speech results come back, will be for the
+                         * entire 'wake up' statement, like 'wake up
+                         * assistant'. When that happens, we enter active
+                         * listening mode, and the next 'final' speech result
+                         * that comes back will trigger a speech request.
+                         */
+                        self.on('finalSpeech', function() {
+                            // once the rest of the speech from the trigger statement comes in, start active listening
+                            activelyListening = true;
+                            self.on('finalSpeech', function(words) {
+                                self.trigger('speechRequest', [words]);
+                                console.log('Going back into passive mode. Say "assistant" to activate.');
+                                activelyListening = false;
+                                return true;
+                            });
+                            console.log('Ready for request...');
+                            return true;
+                        });
+                        self.speak('How can I help you?');
+                    }
+                    console.log('Interim: ' + words);
                 }
             }
         };
