@@ -70,6 +70,8 @@
                             console.log('Going back into passive listening mode.');
                             return true;
                         });
+
+                        return; // if we matched, let's stop going through the results
                     }
                 }
             }
