@@ -9,13 +9,11 @@
     Module.prototype.constructor = Module;
 
     Module.prototype.command = function(command) {
-        var self = this;
-        self.trigger('commandReceived', [command.text]);
+        this.trigger('commandReceived', [command.text]);
     };
 
     Module.prototype.respond = function(data) {
-        var self = this;
-        self.trigger('responseReceived', [data.text]);
+        this.trigger('responseReceived', [data.text]);
     };
 
     Module.prototype.say = function(text) {
