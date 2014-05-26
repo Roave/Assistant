@@ -1,8 +1,8 @@
-(function ($, Donna) {
-    Donna.on('startSpeak', function() {
+(function ($, Assistant) {
+    Assistant.on('startSpeak', function() {
         $('#status').text('Speaking');
     });
-    Donna.on('endSpeak', function() {
+    Assistant.on('endSpeak', function() {
         $('#status').text('Not Speaking');
     });
-})($, Donna);
+})($, Assistant);
