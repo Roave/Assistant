@@ -15,24 +15,56 @@
     Module.prototype = Object.create(EventEmitter.prototype);
     Module.prototype.constructor = Module;
 
+    /**
+     * Chrome has a bug with passing long text to the speech synthesizer that causes it to freeze.
+     * Author: Peter Woolley http://stackoverflow.com/questions/21947730/chrome-speech-synthesis-with-longer-texts
+     */
+    var speechUtteranceChunker = function (utt, settings, callback) {
+        settings = settings || {};
+        var chunkLength = settings && settings.chunkLength || 160;
+        var pattRegex = new RegExp('^.{' + Math.floor(chunkLength / 2) + ',' + chunkLength + '}[\.\!\?\,]{1}|^.{1,' + chunkLength + '}$|^.{1,' + chunkLength + '} ');
+        var txt = (settings && settings.offset !== undefined ? utt.text.substring(settings.offset) : utt.text);
+        var chunkArr = txt.match(pattRegex);
+
+        if (chunkArr[0] !== undefined && chunkArr[0].length > 2) {
+            var chunk = chunkArr[0];
+            var newUtt = new SpeechSynthesisUtterance(chunk);
+            var x;
+            for (x in utt) {
+                if (utt.hasOwnProperty(x) && x !== 'text') {
+                    newUtt[x] = utt[x];
+                }
+            }
+            newUtt.onend = function () {
+                settings.offset = settings.offset || 0;
+                settings.offset += chunk.length - 1;
+                speechUtteranceChunker(utt, settings, callback);
+            }
+            console.log(newUtt); //IMPORTANT!! Do not remove: Logging the object out fixes some onend firing issues.
+            //placing the speak invocation inside a callback fixes ordering and onend issues.
+            setTimeout(function () {
+                speechSynthesis.speak(newUtt);
+            }, 0);
+        } else {
+            //call once all text has been spoken...
+            if (callback !== undefined) {
+                callback();
+            }
+        }
+    };
+
     Module.prototype.speak = function(text, callback) {
         var self = this;
-        var u   = new SpeechSynthesisUtterance();
-        u.text  = text;
-        u.onend = function(e) {
+        var u = new SpeechSynthesisUtterance(text);
+        speaking = true;
+        recognition.stop();
+        this.trigger('startSpeak');
+        // Possible fallback: http://translate.google.com/translate_tts?tl=en&q=speech+to+convert
+        speechUtteranceChunker(u, {chunkLength: 100}, function() {
             speaking = false;
             recognition.start();
             self.trigger('endSpeak');
-        };
-        this.trigger('startSpeak');
-
-        speaking = true;
-        recognition.stop();
-
-        speechSynthesis.speak(u);
-        // Don't remove this console.log...
-        // http://stackoverflow.com/questions/23483990/speechsynthesis-api-onend-callback-not-working#comment36226070_23483990
-        console.log(u);
+        });
     };
 
     Module.prototype.passiveListen = function(triggerWord) {
