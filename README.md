@@ -1,3 +1,3 @@
 # Roave Voice Assistant
 
-Browser-based virtual assitant framework.
+Browser-based virtual assistant framework.
