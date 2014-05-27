@@ -1,29 +1,27 @@
 'use strict';
 (function (exports, EventEmitter) {
 
-    var recognition = new webkitSpeechRecognition();
-    recognition.continuous = true;
-    recognition.interimResults = true;
-
-    var speaking = false;
-    var activelyListening = false;
-    var Assistant;
 
     function Module(assistant, settings) {
         var self = this;
-        Assistant = assistant;
+        self.assistant = assistant;
+        self.speaking = false;
+        self.activelyListening = false;
+        self.recognition = new webkitSpeechRecognition();
+        self.recognition.continuous = true;
+        self.recognition.interimResults = true;
 
-        Assistant.on('responseReceived', function(text) {
+        assistant.on('responseReceived', function(text) {
             self.speak(text);
         });
 
-        settings = settings || {
+        self.settings = settings || {
             keyword:  'assistant',
             response: 'How can I help you?'
         };
 
-        recognition.onresult = function(event) {
-            if (speaking) {
+        self.recognition.onresult = function(event) {
+            if (self.speaking) {
                 // She doesn't like interruptions (and we don't want her to hear herself)
                 return;
             }
@@ -34,10 +32,12 @@
                     console.log('Final: ' + words);
                     self.trigger('finalSpeech', [words])
                     return; // ignore the final, we use interim for low latency on the wake-up... maybe continue instead?
-                } else if (!activelyListening) {
+                }
+
+                if (!self.activelyListening) {
                     console.log('Interim: ' + words);
                     //self.trigger('interimSpeech', [words]);
-                    if (words.match(new RegExp(settings.keyword, 'i'))) {
+                    if (words.match(new RegExp(self.settings.keyword, 'i'))) {
                         /**
                          * They just said the trigger word. Now, the next time
                          * final speech results come back, will be for the
@@ -46,13 +46,13 @@
                          * listening mode, and the next 'final' speech result
                          * that comes back will trigger a speech request.
                          */
-                        self.speak(settings.response);
-                        activelyListening = true;
+                        self.speak(self.settings.response);
+                        self.activelyListening = true;
                         console.log('Active listening mode enabled. Ready for request...');
                         self.on('finalSpeech', function(text) {
-                            Assistant.command({'text': text});
+                            self.assistant.command({'text': text});
                             //self.trigger('speechRequest', [words]);
-                            activelyListening = false;
+                            self.activelyListening = false;
                             console.log('Going back into passive listening mode.');
                             return true;
                         });
@@ -62,14 +62,13 @@
                 }
             }
         };
-        recognition.onend = function() {
+        self.recognition.onend = function() {
             // always listening... Chrome times out after 60 seconds.
-            if (!speaking) {
+            if (!self.speaking) {
                 console.log('Timeout. Restarted speech recognition.');
-                recognition.start();
+                self.recognition.start();
             }
         };
-        //recognition.start();
     };
 
     Module.prototype = Object.create(EventEmitter.prototype);
@@ -116,15 +115,15 @@
     Module.prototype.speak = function(text) {
         var self = this;
         var u = new SpeechSynthesisUtterance(text);
-        speaking = true;
-        recognition.stop();
+        self.speaking = true;
+        self.recognition.stop();
         console.log('Speaking started.');
-        this.trigger('startSpeak');
+        self.trigger('startSpeak');
         // Possible fallback: http://translate.google.com/translate_tts?tl=en&q=speech+to+convert
         speechUtteranceChunker(u, {chunkLength: 140}, function() {
             console.log('Speaking ended.');
-            speaking = false;
-            recognition.start();
+            self.speaking = false;
+            self.recognition.start();
             self.trigger('endSpeak');
         });
     };
