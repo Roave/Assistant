@@ -1,14 +1,13 @@
 'use strict';
 (function (exports, $) {
-    var VoicePlugin;
 
     function Module(voicePlugin) {
-        VoicePlugin = voicePlugin;
+        var voicePlugin = voicePlugin;
 
-        VoicePlugin.on('startSpeak', function() {
+        voicePlugin.on('startSpeak', function() {
             $('#status').text('Speaking');
         });
-        VoicePlugin.on('endSpeak', function() {
+        voicePlugin.on('endSpeak', function() {
             $('#status').text('Not Speaking');
         });
     };
