@@ -1,0 +1,38 @@
+{
+    "name": "roave/assistant",
+    "description": "Browser-based virtual assistant framework.",
+    "homepage": "https://github.com/Roave/Assistant",
+    "authors": [
+        {
+            "name": "Evan Coury",
+            "email": "me@evancoury.com",
+            "homepage": "http://blog.evan.pro/"
+        },
+        {
+            "name": "Roave LLC",
+            "email": "info@roave.com",
+            "homepage": "https://roave.com/"
+        }
+    ],
+    "require": {
+        "php":                         "~5.4",
+        "zendframework/zendframework": "~2.3"
+    },
+    "require-dev": {
+        "phpunit/phpunit":           "~4.0.0",
+        "squizlabs/php_codesniffer": "~2.0.0@DEV"
+    },
+    "autoload": {
+        "psr-4": {
+            "Roave\\Assistant\\Brain\\":      "module/Brain/src/",
+            "Roave\\Assistant\\TheRules\\":   "module/TheRules/",
+            "Roave\\Assistant\\":             "module/Assistant/src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-0": {
+            "RoaveTest\\Assistant\\": "test/"
+        }
+    }
+}
+

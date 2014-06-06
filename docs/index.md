@@ -67,7 +67,9 @@ Additionally, a frontend action might trigger something with a Chrome extension 
 - Allow plugins to match sometimes (give a weight or something)... So you can ask the same question multiple times and get different responses.
 - Allow "fuzzy" matching... this could be used as a first pass to reduce the total number of patterns we need to check against, or simply to find one. For example, a weather plugin could define a few keywords [weather, temperature, forecast] to help with discovery/matching instead of trying to match every possibly way someone might ask about the weather. (There are better machine learning and natural language parsing algorithms than this, but this would be a good, lazy way to start).
 
-### Relevant Projects
+### Relevant Resources / Projects
 
-- [Jasper](http://jasperproject.github.io/)
+- [wit.ai](https://wit.ai/)
+- [freebase](http://www.freebase.com/)
 - [annyang](https://www.talater.com/annyang/)
+- [Jasper](http://jasperproject.github.io/)
