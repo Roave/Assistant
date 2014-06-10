@@ -20,19 +20,10 @@ class Module
         return include __DIR__ . '/../config/module.config.php';
     }
 
-    // @todo split this off to a class
     public function onBootstrap($e)
     {
+        // attach intents
         $sm = $e->getApplication()->getServiceManager();
-        $config = $sm->get('Config');
-        if (!isset($config['roave_assistant_intents'])) {
-            return;
-        }
-
-        $assistant = $sm->get('roave-assistant');
-
-        foreach ($config['roave_assistant_intents'] as $name => $intentConfig) {
-
-        }
+        $assistant = $sm->get('roave-assistant-intents');
     }
 }

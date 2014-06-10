@@ -20,14 +20,19 @@ class Assistant implements EventManagerAwareInterface
         $event->setRawInput($input);
         $event->setAssistant($this);
 
-        // Fitering (+ intent matching?)
-        $eventManager->trigger($event::EVENT_PARSE, $event);
+        // Fitering
+        $eventManager->trigger($event::EVENT_FILTER, $event);
 
-        // Intent matching?
-        $eventManager->trigger($event::EVENT_PROCESS, $event);
+        // Intent matching
+        $eventManager->trigger($event::EVENT_MATCH, $event);
 
         // Responding
         $eventManager->trigger($event::EVENT_RESPOND, $event);
+    }
+
+    public function addIntent(IntentInterface $intent, $priority = 1)
+    {
+        $this->getEventManager()->attachAggregate(new IntentListener($intent), $priority);
     }
 
     public function setAssistantEvent(AssistantEvent $event)

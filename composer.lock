@@ -3,7 +3,7 @@
         "This file locks the dependencies of your project to a known state",
         "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file"
     ],
-    "hash": "ddbd69e50b3bd273489dbb98c561aa61",
+    "hash": "0b8b6c221c4287d24c09ef52255549db",
     "packages": [
         {
             "name": "zendframework/zendframework",
@@ -493,16 +493,16 @@
         },
         {
             "name": "phpunit/phpunit-mock-objects",
-            "version": "2.0.5",
+            "version": "2.0.7",
             "source": {
                 "type": "git",
                 "url": "https://github.com/sebastianbergmann/phpunit-mock-objects.git",
-                "reference": "3697daa12ab57b2bfc27b734ab963142f27b9159"
+                "reference": "ee75edeaa8810d731fa5aec6453eb2c439e6ab93"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/sebastianbergmann/phpunit-mock-objects/zipball/3697daa12ab57b2bfc27b734ab963142f27b9159",
-                "reference": "3697daa12ab57b2bfc27b734ab963142f27b9159",
+                "url": "https://api.github.com/repos/sebastianbergmann/phpunit-mock-objects/zipball/ee75edeaa8810d731fa5aec6453eb2c439e6ab93",
+                "reference": "ee75edeaa8810d731fa5aec6453eb2c439e6ab93",
                 "shasum": ""
             },
             "require": {
@@ -546,7 +546,7 @@
                 "mock",
                 "xunit"
             ],
-            "time": "2014-04-16 14:50:10"
+            "time": "2014-06-06 17:02:44"
         },
         {
             "name": "sebastian/diff",
@@ -756,12 +756,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/squizlabs/PHP_CodeSniffer.git",
-                "reference": "7a0f6f47655bea2cabbfcfed49eb3b2c169ad673"
+                "reference": "7cb5dce5263dd0de27e995a8fbae4766dbc8e7ea"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/squizlabs/PHP_CodeSniffer/zipball/7a0f6f47655bea2cabbfcfed49eb3b2c169ad673",
-                "reference": "7a0f6f47655bea2cabbfcfed49eb3b2c169ad673",
+                "url": "https://api.github.com/repos/squizlabs/PHP_CodeSniffer/zipball/7cb5dce5263dd0de27e995a8fbae4766dbc8e7ea",
+                "reference": "7cb5dce5263dd0de27e995a8fbae4766dbc8e7ea",
                 "shasum": ""
             },
             "require": {
@@ -821,7 +821,7 @@
                 "phpcs",
                 "standards"
             ],
-            "time": "2014-06-04 06:20:29"
+            "time": "2014-06-06 00:56:33"
         },
         {
             "name": "symfony/yaml",

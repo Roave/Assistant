@@ -7,8 +7,9 @@ class Module
         'roave_assistant_intents' => [
             'set_user_name' => [
                 'expressions' => [
+                    'my name is (.*)+',
                     'my name is @user.name',
-                    '(please) call me @user.name (please)',
+                    '(please )?call me @user.name( please)?',
                     'i am @user.name',
                 ],
                 'responses' => [

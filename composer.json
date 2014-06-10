@@ -26,6 +26,7 @@
         "psr-4": {
             "Roave\\Assistant\\Brain\\":      "module/Brain/src/",
             "Roave\\Assistant\\TheRules\\":   "module/TheRules/",
+            "Roave\\Assistant\\NamePlugin\\": "module/NamePlugin/",
             "Roave\\Assistant\\":             "module/Assistant/src/"
         }
     },

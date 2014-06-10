@@ -7,7 +7,7 @@ class Intent implements IntentInterface
 
     protected $expressions = [];
 
-    protected $responses = [];
+    protected $isFinal = false;
 
     public function __construct($name = null)
     {
@@ -27,33 +27,29 @@ class Intent implements IntentInterface
         return $this;
     }
 
+    public function isFinal()
+    {
+        return $this->isFinal;
+    }
+
+    public function setFinal($final)
+    {
+        $this->isFinal = $final;
+    }
+
     public function addExpressions(array $expressions)
     {
         $this->expressions = array_merge($this->expressions, $expressions);
     }
 
-    public function matches($string)
+    public function match($string)
     {
         foreach ($this->expressions as $expression) {
-            if (preg_match($expression, $string, $matches)) {
+            if (preg_match("/{$expression}/i", $string, $matches)) {
                 return true;
             }
         }
 
         return false;
-    }
-
-    public function attach(Assistant $assistant)
-    {
-        $assistant->getEventManager()->attach(AssistantEvent::EVENT_PROCESS, array($this, 'onParse'));
-    }
-
-    public function onParse(AssistantEvent $event)
-    {
-        if (!$this->matches($event->getFilteredInput())) {
-            return;
-        }
-
-        $event->addIntentMatch($this);
     }
 }

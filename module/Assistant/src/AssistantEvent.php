@@ -5,9 +5,8 @@ use Zend\EventManager\Event;
 
 class AssistantEvent extends Event
 {
-    // negative priority for filters, positive for intents?
-    const EVENT_PARSE   = 'parse';
-    const EVENT_PROCESS = 'process';
+    const EVENT_FILTER  = 'filter';
+    const EVENT_MATCH   = 'match';
     const EVENT_RESPOND = 'respond';
 
     protected $rawInput;
